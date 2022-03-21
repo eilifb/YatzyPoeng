@@ -39,6 +39,22 @@ namespace YatzyTestsNS
         }
 
         [TestMethod]
+        public void TestTreLike()
+        {
+            Assert.AreEqual(0, yp.BeregnPoeng("1,2,3,4,5", "TreLike"));
+            Assert.AreEqual(9, yp.BeregnPoeng("3,3,3,5,1", "TreLike"));
+            Assert.AreEqual(15, yp.BeregnPoeng("5,5,5,5,5", "TreLike"));
+        }
+
+        [TestMethod]
+        public void TestFireLike()
+        {
+            Assert.AreEqual(0, yp.BeregnPoeng("1,2,3,4,5", "FireLike"));
+            Assert.AreEqual(12, yp.BeregnPoeng("3,3,3,3,1", "FireLike"));
+            Assert.AreEqual(20, yp.BeregnPoeng("5,5,5,5,5", "FireLike"));
+        }
+
+        [TestMethod]
         [ExpectedException(typeof(ArgumentException), "For mange terninger")]
         public void TestArgumentForMangeTerninger()
         {

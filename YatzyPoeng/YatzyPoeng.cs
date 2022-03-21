@@ -48,7 +48,6 @@ namespace YatzyPoengNS
                                     .Where(t => t.Value.Count > 1)
                                     .Select(t => t.Value.First()*2) //Grunnen til at jeg har Value.First()*2 isteden for Value.Sum() er i tilfelle hvor det er mer en to terninger som har samme øye.
                                     .ToList();
-
                     poeng = terningerSum.Count() != 0 ? terningerSum.Max() : 0;
                     break;
 
@@ -62,9 +61,24 @@ namespace YatzyPoengNS
                                     .Where(t => t.Value.Count > 1)
                                     .Select(t => t.Value.First() * 2)
                                     .ToList();
-
                         poeng = terningerSum.Count() != 0 ? terningerSum.Count() != 2 ? 0 : terningerSum[^1] + terningerSum[^2] : 0;
                     }
+                    break;
+
+                case "TreLike":
+                    int? treLike = terningerSamlet
+                                        .Where(t => t.Value.Count >= 3)
+                                        .Select(t => t.Value.First() * 3) //Se kommentaren på "Par"
+                                        .FirstOrDefault(); //Kan bare velge "en tilfeldig" gitt at det bare kan være tre like blant fem terninger.
+                    poeng = treLike != null ? treLike.Value : 0; //Må alikevel sjekke om det er tre like i det hele tatt.
+                    break;
+
+                case "FireLike":
+                    int? fireLike = terningerSamlet
+                                        .Where(t => t.Value.Count >= 4)
+                                        .Select(t => t.Value.First() * 4)
+                                        .FirstOrDefault();
+                    poeng = fireLike != null ? fireLike.Value : 0;
                     break;
             }
 
