@@ -27,81 +27,45 @@ namespace YatzyPoengNS
                 terningerGruppert.Add(i, terninger.Where(terning => terning == i).ToList());
 
             int poeng = 0;
-            List<int> terningerSum;
+            
             
             switch (kategori)
             {
                 case "Enere":
-                    poeng = terningerGruppert[1].Sum();
+                    poeng = BeregnPoengEnkeltverdier(terningerGruppert,1);
                     break;
                 case "Toere":
-                    poeng = terningerGruppert[2].Sum();
+                    poeng = BeregnPoengEnkeltverdier(terningerGruppert,2);
                     break;
                 case "Treere":
-                    poeng = terningerGruppert[3].Sum();
+                    poeng = BeregnPoengEnkeltverdier(terningerGruppert,3);
                     break;
                 case "Firere":
-                    poeng = terningerGruppert[4].Sum();
+                    poeng = BeregnPoengEnkeltverdier(terningerGruppert,4);
                     break;
                 case "Femere":
-                    poeng = terningerGruppert[5].Sum();
+                    poeng = BeregnPoengEnkeltverdier(terningerGruppert,5);
                     break;
                 case "Seksere":
-                    poeng = terningerGruppert[6].Sum();
+                    poeng = BeregnPoengEnkeltverdier(terningerGruppert,6);
                     break;
-
                 case "Par":
-                    terningerSum = terningerGruppert
-                                    .Where(t => t.Value.Count > 1)
-                                    .Select(t => t.Value.First()*2) //Grunnen til at jeg har Value.First()*2 isteden for Value.Sum() er i tilfelle hvor det er mer en to terninger som har samme verdi.
-                                    .ToList();
-                    poeng = terningerSum.Count() != 0 ? terningerSum.Max() : 0;
+                    poeng = BeregnPoengPar(terningerGruppert);
                     break;
-
                 case "ToPar":
-                    if (terningerGruppert.Where(t => t.Value.Count > 4).Any()) //Spesialtilfelle: de to parene har samme verdi.
-                        //Det fungerer fint å bare ta den første verdien i terningerGruppert som har 2 par, da det bare er en verdi som kan ha to par, gitt 5 terninger. 
-                        poeng = terningerGruppert.Where(t => t.Value.Count > 4).First().Value.First() * 4; 
-                    else
-                    {
-                        terningerSum = terningerGruppert
-                                    .Where(t => t.Value.Count > 1)
-                                    .Select(t => t.Value.First() * 2)
-                                    .ToList();
-                        poeng = terningerSum.Count() != 0 ? terningerSum.Count() != 2 ? 0 : terningerSum[^1] + terningerSum[^2] : 0;
-                    }
+                    poeng = BeregnPoengToPar(terningerGruppert);
                     break;
-
                 case "TreLike":
-                    int? treLike = terningerGruppert
-                                        .Where(t => t.Value.Count >= 3)
-                                        .Select(t => t.Value.First() * 3) //Se kommentaren på "Par"
-                                        .FirstOrDefault(); //Kan bare velge "en tilfeldig" gitt at det bare kan være tre like blant fem terninger.
-                    poeng = treLike != null ? treLike.Value : 0; //Må alikevel sjekke om det er tre like i det hele tatt.
+                    poeng = BeregnPoengLike(terningerGruppert, 3);
                     break;
-
                 case "FireLike":
-                    int? fireLike = terningerGruppert
-                                        .Where(t => t.Value.Count >= 4)
-                                        .Select(t => t.Value.First() * 4)
-                                        .FirstOrDefault();
-                    poeng = fireLike != null ? fireLike.Value : 0;
+                    poeng = BeregnPoengLike(terningerGruppert, 4);
                     break;
-
                 case "LitenStraight":
-                    terninger.Sort();
-                    for(int i  = 1; i < 6; i++)
-                        if (terninger[i] != i)
-                            return poeng = 0;
-                    poeng = 15;
+                    poeng = BeregnPoengStraight(terninger, storStraight: false);
                     break;
-
                 case "StorStraight":
-                    terninger.Sort();
-                    for (int i = 1; i < 6; i++)
-                        if (terninger[i] != i+1)
-                            return poeng = 0;
-                    poeng = 20;
+                    poeng = BeregnPoengStraight(terninger, storStraight: true);
                     break;
 
             }
@@ -109,9 +73,60 @@ namespace YatzyPoengNS
             return poeng;
         }
 
-        public int Sorter(List<int> terninger, string intp)
+        private int BeregnPoengEnkeltverdier(Dictionary<int,List<int>> terningerGruppert, int indeks)
         {
-            return terninger.Where(t => t == 1).Count();
+            return terningerGruppert[indeks].Sum();
+        }
+
+        private int BeregnPoengPar(Dictionary<int, List<int>> terningerGruppert)
+        {
+            List<int> terningerSum = terningerGruppert
+                                    .Where(t => t.Value.Count > 1)
+                                    .Select(t => t.Value.First() * 2) //Grunnen til at jeg har Value.First()*2 isteden for Value.Sum() er i tilfelle hvor det er mer en to terninger som har samme verdi.
+                                    .ToList();
+
+            return terningerSum.Count() != 0 ? terningerSum.Max() : 0;
+        }
+
+        private int BeregnPoengToPar(Dictionary<int,List<int>> terningerGruppert)
+        {
+            if (terningerGruppert.Where(t => t.Value.Count > 4).Any()) //Spesialtilfelle: de to parene har samme verdi.
+                //Det fungerer fint å bare ta den første verdien i terningerGruppert som har 2 par, da det bare er en verdi som kan ha to par, gitt 5 terninger. 
+                return terningerGruppert.Where(t => t.Value.Count > 4).First().Value.First() * 4;
+            else
+            {
+                List<int> terningerSum = terningerGruppert
+                            .Where(t => t.Value.Count > 1)
+                            .Select(t => t.Value.First() * 2)
+                            .ToList();
+
+                return terningerSum.Count() != 2 ? 0 : terningerSum[^1] + terningerSum[^2];
+            }
+        }
+
+        private int BeregnPoengLike(Dictionary<int, List<int>> terningerGruppert, int antallLike)
+        {
+            int? likeVerdier = terningerGruppert
+                                        .Where(t => t.Value.Count >= antallLike)
+                                        .Select(t => t.Value.First() * antallLike) //Må igjen gange istedenfor å summe, se evt. kommentaren i BeregnPoengPar();
+                                        .FirstOrDefault(); //Kan bare velge "en tilfeldig" gitt at det bare kan være tre like blant fem terninger.
+
+            return likeVerdier != null ? likeVerdier.Value : 0; //Må alikevel sjekke om det er tre like i det hele tatt.
+        }
+
+        private int BeregnPoengStraight(List<int> terninger, bool storStraight = false)
+        {
+            //Måten den sjekker om terningene oppfyller kravene for å bli telt som en straight er at den først sorterer
+            //terningene, så går den gjennom terningene en etter en og sammenligner med en straight, som her er straighSammenligner.
+            //Om det er en terning som ikke matcher straighten så avsluttes algorytmen tidlig og poeng blir returnert som 0.           
+            int straightSammenligner = storStraight ? 2 : 1;
+            terninger.Sort();
+
+            for (int i = 0; i < 5; i++,straightSammenligner++)
+                if (terninger[i] != straightSammenligner)
+                    return 0;
+
+            return storStraight ? 20 : 15;
         }
     }
 }
