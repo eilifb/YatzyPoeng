@@ -55,6 +55,22 @@ namespace YatzyTestsNS
         }
 
         [TestMethod]
+        public void TestLitenStraight()
+        {
+            Assert.AreEqual(15, yp.BeregnPoeng("1,2,3,4,5", "LitenStraight"));
+            Assert.AreEqual(0, yp.BeregnPoeng("1,2,2,3,4", "LitenStraight"));
+            Assert.AreEqual(15, yp.BeregnPoeng("1,5,3,4,2", "LitenStraight"));
+        }
+
+        [TestMethod]
+        public void TestStorStraight()
+        {
+            Assert.AreEqual(20, yp.BeregnPoeng("2,3,4,5,6", "StorStraight"));
+            Assert.AreEqual(0, yp.BeregnPoeng("1,2,2,3,4", "StorStraight"));
+            Assert.AreEqual(20, yp.BeregnPoeng("2,5,3,4,6", "StorStraight"));
+        }
+
+        [TestMethod]
         [ExpectedException(typeof(ArgumentException), "For mange terninger")]
         public void TestArgumentForMangeTerninger()
         {
