@@ -70,6 +70,12 @@ namespace YatzyPoengNS
                 case "FultHus":
                     poeng = BeregnPoengFultHus(terningerGruppert);
                     break;
+                case "Sjanse":
+                    poeng = BergenPoengSjanse(terninger);
+                    break;
+                case "Yatzy":
+                    poeng = BeregnPoengYatzy(terningerGruppert);
+                    break;
             }
 
             return poeng;
@@ -141,6 +147,19 @@ namespace YatzyPoengNS
 
             else
                 return 0;            
+        }
+
+        private int BergenPoengSjanse(List<int> terninger)
+        {
+            return terninger.Sum();
+        }
+
+        private int BeregnPoengYatzy(Dictionary<int, List<int>> terningerGruppert)
+        {
+            if (terningerGruppert.Where(t => t.Value.Count == 5).Any())
+                return terningerGruppert.Select(t => t.Value.Sum()).Sum();
+            else
+                return 0;
         }
     }
 }

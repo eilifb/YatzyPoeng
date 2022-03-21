@@ -79,6 +79,22 @@ namespace YatzyTestsNS
         }
 
         [TestMethod]
+        public void TestFultSjanse()
+        {
+            Assert.AreEqual(13, yp.BeregnPoeng("2,2,3,3,3", "Sjanse"));
+            Assert.AreEqual(12, yp.BeregnPoeng("1,2,3,3,3", "Sjanse"));
+            Assert.AreEqual(15, yp.BeregnPoeng("1,2,3,4,5", "Sjanse"));
+        }
+
+        [TestMethod]
+        public void TestYatzy()
+        {
+            Assert.AreEqual(0, yp.BeregnPoeng("2,2,3,3,3", "Yatzy"));
+            Assert.AreEqual(15, yp.BeregnPoeng("3,3,3,3,3", "Yatzy"));
+            Assert.AreEqual(30, yp.BeregnPoeng("6,6,6,6,6", "Yatzy"));
+        }
+
+        [TestMethod]
         [ExpectedException(typeof(ArgumentException), "For mange terninger")]
         public void TestArgumentForMangeTerninger()
         {
