@@ -67,7 +67,9 @@ namespace YatzyPoengNS
                 case "StorStraight":
                     poeng = BeregnPoengStraight(terninger, storStraight: true);
                     break;
-
+                case "FultHus":
+                    poeng = BeregnPoengFultHus(terningerGruppert);
+                    break;
             }
 
             return poeng;
@@ -127,6 +129,18 @@ namespace YatzyPoengNS
                     return 0;
 
             return storStraight ? 20 : 15;
+        }
+
+        private int BeregnPoengFultHus(Dictionary<int, List<int>> terningerGruppert)
+        {
+            if(terningerGruppert.Where(t => t.Value.Count == 2).Any() && terningerGruppert.Where(t => t.Value.Count == 3).Any())
+                return terningerGruppert.Select(t => t.Value.Sum()).Sum();
+
+            else if(terningerGruppert.Where(t => t.Value.Count == 5).Any()) //Antar at to terninger som er f.eks "2,2" og tre terninger som er "2,2,2" er gyldige.
+                return terningerGruppert.Select(t => t.Value.Sum()).Sum();
+
+            else
+                return 0;            
         }
     }
 }

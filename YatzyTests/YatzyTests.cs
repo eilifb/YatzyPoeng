@@ -71,6 +71,14 @@ namespace YatzyTestsNS
         }
 
         [TestMethod]
+        public void TestFultHus()
+        {
+            Assert.AreEqual(13, yp.BeregnPoeng("2,2,3,3,3", "FultHus"));
+            Assert.AreEqual(0, yp.BeregnPoeng("1,2,3,3,3", "FultHus"));
+            Assert.AreEqual(10, yp.BeregnPoeng("2,2,2,2,2", "FultHus"));
+        }
+
+        [TestMethod]
         [ExpectedException(typeof(ArgumentException), "For mange terninger")]
         public void TestArgumentForMangeTerninger()
         {
