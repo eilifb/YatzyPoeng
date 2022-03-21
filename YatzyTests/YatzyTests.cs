@@ -36,6 +36,7 @@ namespace YatzyTestsNS
             Assert.AreEqual(0, yp.BeregnPoeng("1,3,5,6,1", "ToPar"));
             Assert.AreEqual(10, yp.BeregnPoeng("3,1,4,1,4", "ToPar"));
             Assert.AreEqual(20, yp.BeregnPoeng("5,5,5,5,5", "ToPar"));
+            Assert.AreEqual(0, yp.BeregnPoeng("2,2,1,4,5", "ToPar"));
         }
 
         [TestMethod]
@@ -101,5 +102,31 @@ namespace YatzyTestsNS
             int poeng = yp.BeregnPoeng("1,2,3,4,5,6", "Enere");
         }
 
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException), "Ugyldig verdi for terning")]
+        public void TestArgumentUgyldigVerdiTerninger()
+        {
+            int poeng = yp.BeregnPoeng("-1,2,3,4,5,6", "Enere");
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(FormatException), "Ugyldig streng for terning")]
+        public void TestArgumentUgylidgStrengTerninger()
+        {
+            int poeng = yp.BeregnPoeng("hvertfall ikke en terning", "Enere");
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException), "Ugyldig poengkategori")]
+        public void TestArgumentUgyldigKategori()
+        {
+            int poeng = yp.BeregnPoeng("1,3,4,5,6", "ikke en kategori");
+        }
+
+        [TestMethod]
+        public void TestArgumentForskjelligeStavemaater()
+        {
+            int poeng = yp.BeregnPoeng("1,3,4,5,6", "Fult hus");
+        }
     }
 }
