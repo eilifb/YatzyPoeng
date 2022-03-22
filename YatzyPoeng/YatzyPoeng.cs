@@ -9,15 +9,15 @@ namespace YatzyPoengNS
         /// <summary>
         /// Gitt et sett med terninger og en yatzy poengkategori beregnes hvor mange poeng du tjener.
         /// </summary>
-        /// <param name="terningerInput"> 5 terninger separert med komma</param>
-        /// <param name="kategori">Kategorien den ønskes å beregnes for</param>
+        /// <param name="terningerInput"> 5 terningverdier separert med komma</param>
+        /// <param name="kategori">Kategorien som skal brukes for å beregne poeng</param>
         /// <returns>Poengene for kategorien oppgitt</returns>
         /// <example>
         /// <code>
         ///     string terningerInput = "6,6,6,6,6";
         ///     string kategori = "Yatzy";
         ///     YatzyPoeng yp = new YatzyPoeng();
-        ///     yp.BeregnPoeng(terningerInput, kategori);        ///     
+        ///     yp.BeregnPoeng(terningerInput, kategori); //Den vil da returnere 30.    
         /// </code> 
         /// </example>
         public int BeregnPoeng(string terningerInput, string kategori)
@@ -94,6 +94,51 @@ namespace YatzyPoengNS
             }
 
             return poeng;
+        }
+
+
+        /// <summary>
+        /// Finner den yatzykategorien som gir flest poeng gitt et kast på 5 terninger.
+        /// </summary>
+        /// <param name="terninger">5 terningverdier separert med komma</param>
+        /// <returns>
+        /// Et Tuple<string,int>(), hvor strengen er navnet på kategorien, og tallet er poengsummen.
+        /// I tilfelle hvor flere kategorier gir samme sum så prioriteres den som er listet nederst i oppgaven,
+        /// altså yatzy over sjanse over fult hus osv.
+        /// </returns>
+        /// <example>
+        /// <code>
+        ///     string terningerInput = "6,6,6,6,6";
+        ///     YatzyPoeng yp = new YatzyPoeng();
+        ///     yp.FinnBesteKategori(terningerInput); //Den vil da returnere ("yatzy",30) i et Tuple.     
+        /// </code> 
+        /// </example>
+        public Tuple<string,int> FinnBesteKategori(string terningerInput)
+        {
+            List<string> kategorier = new List<string>()
+            {
+                "enere",
+                "toere",
+                "treere",
+                "firere",
+                "femere",
+                "seksere",
+                "par",
+                "topar",
+                "trelike",
+                "firelike",
+                "fulthus",
+                "sjanse",
+                "yatzy"
+            };
+
+            List<Tuple<string, int>> allePoeng = new List<Tuple<string, int>>();
+
+            foreach (string kategori in kategorier)
+                allePoeng.Add(new Tuple<string, int>(kategori, this.BeregnPoeng(terningerInput, kategori)));
+
+            allePoeng.Sort((x,y)=> x.Item2.CompareTo(y.Item2));
+            return allePoeng.Last();
         }
 
         /// <summary>
