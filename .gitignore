@@ -361,4 +361,7 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
-/DoxyGen
+
+/docs/latex
+/docs/rtf
+/docs/Doxyfile

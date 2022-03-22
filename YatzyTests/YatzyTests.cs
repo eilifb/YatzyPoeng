@@ -4,12 +4,61 @@ using YatzyPoengNS;
 
 namespace YatzyTestsNS
 {
+
     [TestClass]
-    public class YatzyTests
+    public class ArgumentTester
     {
         public YatzyPoeng yp;
 
-        public YatzyTests()
+        public ArgumentTester()
+        {
+            yp = new YatzyPoeng();
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException), "For mange terninger")]
+        public void TestForMangeTerninger()
+        {
+            int poeng = yp.BeregnPoeng("1,2,3,4,5,6", "Enere");
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException), "Ugyldig verdi for terning")]
+        public void TestUgyldigVerdiTerninger()
+        {
+            int poeng = yp.BeregnPoeng("-1,2,3,4,5,6", "Enere");
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException), "Ugyldig streng for terning")]
+        public void TestUgylidgStrengTerninger()
+        {
+            int poeng = yp.BeregnPoeng("hvertfall ikke en terning", "Enere");
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException), "Ugyldig poengkategori")]
+        public void TestUgyldigKategori()
+        {
+            int poeng = yp.BeregnPoeng("1,3,4,5,6", "ikke en kategori");
+        }
+
+        [TestMethod]
+        public void TestArgumentForskjelligeStavemaater()
+        {
+            yp.BeregnPoeng("1,3,4,5,6", "Fult hus");
+            yp.BeregnPoeng("1,3,4,5,6", "FuLT hUs");
+            yp.BeregnPoeng("1,3,4,5,6", "FULTHUS");
+            yp.BeregnPoeng("1,3,4,5,6", "Fult                  h  us");
+        }
+    }
+
+    [TestClass]
+    public class BeregnPoengTester
+    {
+        public YatzyPoeng yp;
+
+        public BeregnPoengTester()
         {
             yp = new YatzyPoeng();
         }
@@ -91,42 +140,27 @@ namespace YatzyTestsNS
         public void TestYatzy()
         {
             Assert.AreEqual(0, yp.BeregnPoeng("2,2,3,3,3", "Yatzy"));
-            Assert.AreEqual(15, yp.BeregnPoeng("3,3,3,3,3", "Yatzy"));
-            Assert.AreEqual(30, yp.BeregnPoeng("6,6,6,6,6", "Yatzy"));
+            Assert.AreEqual(50, yp.BeregnPoeng("3,3,3,3,3", "Yatzy"));
+            Assert.AreEqual(50, yp.BeregnPoeng("6,6,6,6,6", "Yatzy"));
+        }
+    }
+
+    [TestClass]
+    public class FinnBesteKategoriTester
+    {
+        public YatzyPoeng yp;
+        public FinnBesteKategoriTester()
+        {
+            yp = new YatzyPoeng();
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentException), "For mange terninger")]
-        public void TestArgumentForMangeTerninger()
+        public void TestFinnBesteKategori()
         {
-            int poeng = yp.BeregnPoeng("1,2,3,4,5,6", "Enere");
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentException), "Ugyldig verdi for terning")]
-        public void TestArgumentUgyldigVerdiTerninger()
-        {
-            int poeng = yp.BeregnPoeng("-1,2,3,4,5,6", "Enere");
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(FormatException), "Ugyldig streng for terning")]
-        public void TestArgumentUgylidgStrengTerninger()
-        {
-            int poeng = yp.BeregnPoeng("hvertfall ikke en terning", "Enere");
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentException), "Ugyldig poengkategori")]
-        public void TestArgumentUgyldigKategori()
-        {
-            int poeng = yp.BeregnPoeng("1,3,4,5,6", "ikke en kategori");
-        }
-
-        [TestMethod]
-        public void TestArgumentForskjelligeStavemaater()
-        {
-            int poeng = yp.BeregnPoeng("1,3,4,5,6", "Fult hus");
+            Assert.AreEqual(new Tuple<string, int>("yatzy", 50), yp.FinnBesteKategori("6,6,6,6,6"));
+            Assert.AreEqual(new Tuple<string, int>("fulthus", 7), yp.FinnBesteKategori("1,1,1,2,2"));
+            Assert.AreEqual(new Tuple<string, int>("sjanse", 15), yp.FinnBesteKategori("1,2,3,4,5"));
+            Assert.AreEqual(new Tuple<string, int>("fulthus", 27), yp.FinnBesteKategori("5,5,5,6,6"));
         }
     }
 }

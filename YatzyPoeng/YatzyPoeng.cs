@@ -100,17 +100,17 @@ namespace YatzyPoengNS
         /// <summary>
         /// Finner den yatzykategorien som gir flest poeng gitt et kast på 5 terninger.
         /// </summary>
-        /// <param name="terninger">5 terningverdier separert med komma</param>
+        /// <param name="terningerInput">5 terningverdier separert med komma</param>
         /// <returns>
         /// Et Tuple<string,int>(), hvor strengen er navnet på kategorien, og tallet er poengsummen.
-        /// I tilfelle hvor flere kategorier gir samme sum så prioriteres den som er listet nederst i oppgaven,
-        /// altså yatzy over sjanse over fult hus osv.
+        /// I tilfelle hvor flere kategorier gir samme sum så prioriteres den som er listet øverst i oppgaven,
+        /// fult hus over sjanse osv.
         /// </returns>
         /// <example>
         /// <code>
         ///     string terningerInput = "6,6,6,6,6";
         ///     YatzyPoeng yp = new YatzyPoeng();
-        ///     yp.FinnBesteKategori(terningerInput); //Den vil da returnere ("yatzy",30) i et Tuple.     
+        ///     yp.FinnBesteKategori(terningerInput); //Den vil da returnere ("yatzy",50) i et Tuple.     
         /// </code> 
         /// </example>
         public Tuple<string,int> FinnBesteKategori(string terningerInput)
@@ -137,8 +137,24 @@ namespace YatzyPoengNS
             foreach (string kategori in kategorier)
                 allePoeng.Add(new Tuple<string, int>(kategori, this.BeregnPoeng(terningerInput, kategori)));
 
-            allePoeng.Sort((x,y)=> x.Item2.CompareTo(y.Item2));
-            return allePoeng.Last();
+            allePoeng.Sort((x,y)=> y.Item2.CompareTo(x.Item2));
+            return allePoeng.First();
+        }
+
+        /// <summary>
+        /// En alternativ, litt spøkefull løsning på oppgave 3, gitt oppgaveteksten slik den står. 
+        /// Siden alle kategoriene utenom yatzy gir like mye eller mindre poeng som sjanse så returerer den 50
+        /// poeng om terningkastet oppfyller kravene for yatzy, og summen av terningverdiene om den ikke gjør det.
+        /// </summary>
+        /// <param name="terningerInput">5 terningverdier separert med komma</param>
+        /// <returns>50 eller summen av terningverdiene</returns>
+        public Tuple<string,int> FinnBesteKategoriSpok(string terningerInput)
+        {
+            List<int> terninger = terningerInput.Split(",").Select(t => { return System.Convert.ToInt32(t); }).ToList();
+            if (terninger.Distinct().Count() == 1)
+                return new Tuple<string, int>("yatzy", 50);
+            else
+                return new Tuple<string, int>("sjanse", terninger.Sum());
         }
 
         /// <summary>
@@ -274,14 +290,14 @@ namespace YatzyPoengNS
         }
 
         /// <summary>
-        /// Sjekker om alle terningene i et kast deler terningverdi, og summerer de hvis de gjør.
+        /// Sjekker om alle terningene i et kast deler terningverdi, og returnerer 50 om de gjør.
         /// </summary>
         /// <param name="terningerGruppert">En Dictionary hvor Key'ene er terningverdier, og Value'ene er alle terningene i kastet med den terningverdien</param>
-        /// <returns>Summen av alle terningverdiene, eller 0 hvis ikke alle terningverdiene er like.</returns>
+        /// <returns>50 hvis alle terningverdiene er like, eller 0 hvis de ikke er det.</returns>
         private int BeregnPoengYatzy(Dictionary<int, List<int>> terningerGruppert)
         {
             if (terningerGruppert.Where(t => t.Value.Count == 5).Any())
-                return terningerGruppert.Select(t => t.Value.Sum()).Sum();
+                return 50;
             else
                 return 0;
         }
